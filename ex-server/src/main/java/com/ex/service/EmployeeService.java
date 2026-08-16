@@ -2,7 +2,9 @@ package com.ex.service;
 
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
+import com.ex.dto.EmployeePageQueryDTO;
 import com.ex.entity.Employee;
+import com.ex.result.PageResult;
 
 public interface EmployeeService {
 
@@ -18,4 +20,12 @@ public interface EmployeeService {
      * @param employeeDTO
      */
     void addEmp(EmployeeDTO employeeDTO);
+
+    PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    void setStatus(Integer status, Long id);
+
+    Employee getById(Long id);
+
+    void update(EmployeeDTO employeeDTO);
 }

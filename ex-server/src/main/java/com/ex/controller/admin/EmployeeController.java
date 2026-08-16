@@ -3,8 +3,10 @@ package com.ex.controller.admin;
 import com.ex.constant.JwtClaimsConstant;
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
+import com.ex.dto.EmployeePageQueryDTO;
 import com.ex.entity.Employee;
 import com.ex.properties.JwtProperties;
+import com.ex.result.PageResult;
 import com.ex.result.Result;
 import com.ex.service.EmployeeService;
 import com.ex.utils.JwtUtil;
@@ -13,10 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -90,4 +89,40 @@ public class EmployeeController {
         return Result.success();
     }
 
+    /**
+     * 分页查询
+     * @param employeePageQueryDTO
+     * @return
+     */
+    @GetMapping("/page")
+    @ApiOperation("分页查询员工")
+    public Result<PageResult> pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        log.info("分页查询员工，参数为：{}", employeePageQueryDTO);
+        PageResult pageResult = employeeService.pageQuery(employeePageQueryDTO);
+        return Result.success(pageResult);
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("启用或禁用员工")
+    public Result<String> setStatus(@PathVariable("status") Integer status, Long id) {
+        log.info("启用或禁用员工：{}，{}", status, id);
+        employeeService.setStatus(status, id);
+        return Result.success();
+    }
+
+    @GetMapping("{id}")
+    @ApiOperation("根据id查询员工")
+    public Result<Employee> getEmployee(@PathVariable("id") Long id) {
+        log.info("根据id查询员工:{}", id);
+        Employee employee = employeeService.getById(id);
+        return Result.success(employee);
+    }
+
+    @PutMapping
+    @ApiOperation("编辑员工信息")
+    public Result<String> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+        log.info("编辑员工信息：{}", employeeDTO);
+        employeeService.update(employeeDTO);
+        return Result.success();
+    }
 }

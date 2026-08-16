@@ -1,6 +1,8 @@
 package com.ex.mapper;
 
+import com.ex.dto.EmployeePageQueryDTO;
 import com.ex.entity.Employee;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -23,4 +25,11 @@ public interface EmployeeMapper {
             "(#{name}, #{username}, #{password}, #{phone}, #{sex}, #{idNumber},\n" +
             " #{createTime}, #{updateTime}, #{createUser}, #{updateUser})\n")
     void insert(Employee employee);
+
+    Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
+
+    void update(Employee employee);
+
+    @Select("select * from employee where id = #{id}")
+    Employee getById(Long id);
 }

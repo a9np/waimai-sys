@@ -6,12 +6,16 @@ import com.ex.constant.StatusConstant;
 import com.ex.context.BaseContext;
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
+import com.ex.dto.EmployeePageQueryDTO;
 import com.ex.entity.Employee;
 import com.ex.exception.AccountLockedException;
 import com.ex.exception.AccountNotFoundException;
 import com.ex.exception.PasswordErrorException;
 import com.ex.mapper.EmployeeMapper;
+import com.ex.result.PageResult;
 import com.ex.service.EmployeeService;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,6 +82,39 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setCreateUser(curId);
         employee.setUpdateUser(curId);
         employeeMapper.insert(employee);
+    }
+
+    @Override
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
+        PageResult pageResult = new PageResult(page.getTotal(), page.getResult());
+        return pageResult;
+    }
+
+    @Override
+    public void setStatus(Integer status, Long id) {
+        Employee employee = Employee.builder()
+                .status(status)
+                .id(id)
+                .build();
+        employeeMapper.update(employee);
+    }
+
+    @Override
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("****");
+        return employee;
+    }
+
+    @Override
+    public void update(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setUpdateTime(LocalDateTime.now());
+        employee.setUpdateUser(BaseContext.getCurrentId());
+        employeeMapper.update(employee);
     }
 
 }
