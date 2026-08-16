@@ -1,7 +1,9 @@
 package com.ex.mapper;
 
+import com.ex.annotation.AutoFill;
 import com.ex.dto.EmployeePageQueryDTO;
 import com.ex.entity.Employee;
+import com.ex.enumeration.OperationType;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,6 +20,7 @@ public interface EmployeeMapper {
     @Select("select * from employee where username = #{username}")
     Employee getByUsername(String username);
 
+    @AutoFill(OperationType.INSERT)
     @Insert("INSERT INTO employee\n" +
             "(name, username, password, phone, sex, id_number,\n" +
             " create_time, update_time, create_user, update_user)\n" +
@@ -28,6 +31,7 @@ public interface EmployeeMapper {
 
     Page<Employee> pageQuery(EmployeePageQueryDTO employeePageQueryDTO);
 
+    @AutoFill(OperationType.UPDATE)
     void update(Employee employee);
 
     @Select("select * from employee where id = #{id}")
