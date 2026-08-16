@@ -1,7 +1,10 @@
 package com.ex.service.impl;
 
 import com.ex.constant.MessageConstant;
+import com.ex.constant.PasswordConstant;
 import com.ex.constant.StatusConstant;
+import com.ex.context.BaseContext;
+import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
 import com.ex.entity.Employee;
 import com.ex.exception.AccountLockedException;
@@ -9,8 +12,12 @@ import com.ex.exception.AccountNotFoundException;
 import com.ex.exception.PasswordErrorException;
 import com.ex.mapper.EmployeeMapper;
 import com.ex.service.EmployeeService;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -38,7 +45,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
 
         //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
+        password = DigestUtils.md5Hex(password);
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -51,6 +58,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //3、返回实体对象
         return employee;
+    }
+
+    /**
+     * 新增员工
+     * @param employeeDTO
+     */
+    @Override
+    public void addEmp(EmployeeDTO employeeDTO) {
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+        employee.setId(null);
+        employee.setStatus(StatusConstant.ENABLE);
+        employee.setPassword(DigestUtils.md5Hex(PasswordConstant.DEFAULT_PASSWORD));
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+
+        Long curId = BaseContext.getCurrentId();
+        employee.setCreateUser(curId);
+        employee.setUpdateUser(curId);
+        employeeMapper.insert(employee);
     }
 
 }
