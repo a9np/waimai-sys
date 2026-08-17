@@ -1,6 +1,6 @@
-package com.sky.mapper;
+package com.ex.mapper;
 
-import com.sky.entity.SetmealDish;
+import com.ex.entity.SetmealDish;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 
