@@ -38,8 +38,8 @@ public class AutoFillAspect {
         log.info("开始进行公共字段填充");
 
         //获取到当前被拦截的方法上的注解标识的操作类型
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        AutoFill autoFill = signature.getMethod().getAnnotation(AutoFill.class);
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        AutoFill autoFill = methodSignature.getMethod().getAnnotation(AutoFill.class);
         OperationType operationType = autoFill.value();
         //获取到当前被拦截的方法的参数 -- 实体对象
         Object[] args = joinPoint.getArgs();

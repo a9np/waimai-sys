@@ -1,5 +1,8 @@
 package com.ex.mapper;
 
+import com.ex.annotation.AutoFill;
+import com.ex.entity.Dish;
+import com.ex.enumeration.OperationType;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,4 +17,6 @@ public interface DishMapper {
     @Select("select count(id) from dish where category_id = #{categoryId}")
     Integer countByCategoryId(Long categoryId);
 
+    @AutoFill(OperationType.INSERT)
+    void addDish(Dish dish);
 }
