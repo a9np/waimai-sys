@@ -3,10 +3,10 @@ package com.ex.service.impl;
 import com.ex.constant.MessageConstant;
 import com.ex.constant.PasswordConstant;
 import com.ex.constant.StatusConstant;
-import com.ex.context.BaseContext;
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
 import com.ex.dto.EmployeePageQueryDTO;
+import com.ex.dto.PasswordEditDTO;
 import com.ex.entity.Employee;
 import com.ex.exception.AccountLockedException;
 import com.ex.exception.AccountNotFoundException;
@@ -115,6 +115,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 //        employee.setUpdateTime(LocalDateTime.now());
 //        employee.setUpdateUser(BaseContext.getCurrentId());
         employeeMapper.update(employee);
+    }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        Employee oldEmpPwdInfo = employeeMapper.getById(passwordEditDTO.getEmpId());
+        if (oldEmpPwdInfo == null) {
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        }
+        //密码比对
+        String oldPwd = DigestUtils.md5Hex(passwordEditDTO.getOldPassword());
+        if (!oldPwd.equals(oldEmpPwdInfo.getPassword())) {
+            //密码错误
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
+
+        Employee newEmpPwd = Employee.builder()
+                .id(passwordEditDTO.getEmpId())
+                .password(DigestUtils.md5Hex(passwordEditDTO.getNewPassword()))
+                .build();
+        employeeMapper.update(newEmpPwd);
     }
 
 }
