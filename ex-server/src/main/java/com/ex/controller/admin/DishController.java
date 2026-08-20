@@ -3,6 +3,7 @@ package com.ex.controller.admin;
 
 import com.ex.dto.DishDTO;
 import com.ex.dto.DishPageQueryDTO;
+import com.ex.entity.Dish;
 import com.ex.result.PageResult;
 import com.ex.result.Result;
 import com.ex.service.DishService;
@@ -90,5 +91,18 @@ public class DishController {
         log.info("起售或停售商品：status={},id={}", status, id);
         dishService.setStatus(id, status);
         return Result.success();
+    }
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("根据分类id查询菜品")
+    public Result<List<Dish>> list(Long categoryId) {
+        List<Dish> list = dishService.list(categoryId);
+        return Result.success(list);
     }
 }

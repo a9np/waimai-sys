@@ -1,6 +1,7 @@
 package com.ex.controller.admin;
 
 import com.ex.constant.JwtClaimsConstant;
+import com.ex.context.BaseContext;
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
 import com.ex.dto.EmployeePageQueryDTO;
@@ -130,6 +131,9 @@ public class EmployeeController {
     @PutMapping("/editPassword")
     @ApiOperation("修改密码")
     public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+        log.info("修改员工密码：{}", passwordEditDTO);
+        passwordEditDTO.setEmpId(BaseContext.getCurrentId());
+        employeeService.editPassword(passwordEditDTO);
         return Result.success();
     }
 }

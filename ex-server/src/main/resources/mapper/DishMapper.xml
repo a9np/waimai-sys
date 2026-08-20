@@ -25,7 +25,7 @@
         where id = #{id}
     </update>
     <delete id="deleteByIds">
-        delete from dish where id in 
+        delete from dish where id in
         <foreach collection="ids" open="(" close=")" item="id" separator=",">
             #{id}
         </foreach>
@@ -44,5 +44,20 @@
             </if>
         </where>
         order by d.create_time desc
+    </select>
+    <select id="list" resultType="com.ex.entity.Dish" parameterType="com.ex.entity.Dish">
+        select * from dish
+        <where>
+            <if test="name != null">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="categoryId != null">
+                and category_id = #{categoryId}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
     </select>
 </mapper>
