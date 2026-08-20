@@ -1,11 +1,12 @@
 package com.ex.controller.admin;
 
 
-import com.ex.dto.DishPDTO;
+import com.ex.dto.DishDTO;
 import com.ex.dto.DishPageQueryDTO;
 import com.ex.result.PageResult;
 import com.ex.result.Result;
 import com.ex.service.DishService;
+import com.ex.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ public class DishController {
 
     @PostMapping
     @ApiOperation("添加菜品")
-    public Result<String> addDish(@RequestBody DishPDTO dishDTO) {
+    public Result<String> addDish(@RequestBody DishDTO dishDTO) {
 
         dishService.addDish(dishDTO);
         return Result.success();
@@ -54,5 +55,40 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     * 根据id查询菜品
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @ApiOperation("根据id查询菜品")
+    public Result<DishVO> getById(@PathVariable Long id) {
+        log.info("根据id查询菜品：{}", id);
+        DishVO dishVO = dishService.getByIdWithFlavor(id);
+        return Result.success(dishVO);
+    }
 
+    /**
+     * 修改菜品
+     *
+     * @param dishDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation("修改菜品")
+    public Result update(@RequestBody DishDTO dishDTO) {
+        log.info("修改菜品：{}", dishDTO);
+        dishService.updateWithFlavor(dishDTO);
+
+        return Result.success();
+    }
+
+    @PostMapping("/status/{status}")
+    @ApiOperation("起售停售")
+    public Result setStatus(@RequestParam("id") Long id, @PathVariable Integer status) {
+        log.info("起售或停售商品：status={},id={}", status, id);
+        dishService.setStatus(id, status);
+        return Result.success();
+    }
 }

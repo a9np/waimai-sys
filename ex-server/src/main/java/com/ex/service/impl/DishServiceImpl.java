@@ -2,7 +2,7 @@ package com.ex.service.impl;
 
 import com.ex.constant.MessageConstant;
 import com.ex.constant.StatusConstant;
-import com.ex.dto.DishPDTO;
+import com.ex.dto.DishDTO;
 import com.ex.dto.DishPageQueryDTO;
 import com.ex.entity.Dish;
 import com.ex.entity.DishFlavor;
@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,13 +35,13 @@ public class DishServiceImpl implements DishService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void addDish(DishPDTO dishDTO) {
+    public void addDish(DishDTO dishDTO) {
 
         Dish dish = new Dish();
         BeanUtils.copyProperties(dishDTO, dish);
 
         dishMapper.addDish(dish);
-        
+
         List<DishFlavor> dishFlavors = dishDTO.getFlavors();
         if (dishFlavors == null || dishFlavors.isEmpty()) {
             return;
@@ -48,7 +49,7 @@ public class DishServiceImpl implements DishService {
         for (DishFlavor dishflavor : dishFlavors) {
             dishflavor.setDishId(dish.getId());
         }
-        dishFlavorMapper.addFlavors(dishFlavors);
+        dishFlavorMapper.insert(dishFlavors);
 
     }
 
@@ -91,5 +92,65 @@ public class DishServiceImpl implements DishService {
 //        }
         dishMapper.deleteByIds(ids);
         dishFlavorMapper.deleteByDishIds(ids);
+    }
+
+    /**
+     * 根据id查询菜品和对应的口味数据
+     *
+     * @param id
+     * @return
+     */
+    public DishVO getByIdWithFlavor(Long id) {
+        //根据id查询菜品数据
+        Dish dish = dishMapper.getById(id);
+
+        //根据菜品id查询口味数据
+        List<DishFlavor> dishFlavors = dishFlavorMapper.getByDishId(id);
+
+        //将查询到的数据封装到VO
+        DishVO dishVO = new DishVO();
+        BeanUtils.copyProperties(dish, dishVO);
+        dishVO.setFlavors(dishFlavors);
+
+        return dishVO;
+    }
+
+    /**
+     * 根据id修改菜品基本信息和对应的口味信息
+     *
+     * @param dishDTO
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateWithFlavor(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+
+        //修改菜品表基本信息
+        dishMapper.update(dish);
+
+        //删除原有的口味数据
+        ArrayList<Long> id = new ArrayList<>();
+        id.add(dishDTO.getId());
+        dishFlavorMapper.deleteByDishIds(id);
+
+        //重新插入口味数据
+        List<DishFlavor> flavors = dishDTO.getFlavors();
+        if (flavors != null && flavors.size() > 0) {
+            flavors.forEach(dishFlavor -> {
+                dishFlavor.setDishId(dishDTO.getId());
+            });
+            //向口味表插入n条数据
+            dishFlavorMapper.insert(flavors);
+        }
+    }
+
+    @Override
+    public void setStatus(Long id, Integer status) {
+        Dish dish = Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+        dishMapper.update(dish);
     }
 }

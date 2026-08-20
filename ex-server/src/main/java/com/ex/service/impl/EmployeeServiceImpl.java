@@ -50,6 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
         password = DigestUtils.md5Hex(password);
+//        System.out.println(password);
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);

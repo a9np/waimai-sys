@@ -4,6 +4,7 @@ import com.ex.constant.JwtClaimsConstant;
 import com.ex.dto.EmployeeDTO;
 import com.ex.dto.EmployeeLoginDTO;
 import com.ex.dto.EmployeePageQueryDTO;
+import com.ex.dto.PasswordEditDTO;
 import com.ex.entity.Employee;
 import com.ex.properties.JwtProperties;
 import com.ex.result.PageResult;
@@ -123,6 +124,12 @@ public class EmployeeController {
     public Result<String> updateEmployee(@RequestBody EmployeeDTO employeeDTO) {
         log.info("编辑员工信息：{}", employeeDTO);
         employeeService.update(employeeDTO);
+        return Result.success();
+    }
+
+    @PutMapping("/editPassword")
+    @ApiOperation("修改密码")
+    public Result<String> editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
         return Result.success();
     }
 }
