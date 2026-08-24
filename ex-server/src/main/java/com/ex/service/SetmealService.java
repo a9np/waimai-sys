@@ -2,7 +2,9 @@ package com.ex.service;
 
 import com.ex.dto.SetmealDTO;
 import com.ex.dto.SetmealPageQueryDTO;
+import com.ex.entity.Setmeal;
 import com.ex.result.PageResult;
+import com.ex.vo.DishItemVO;
 import com.ex.vo.SetmealVO;
 
 import java.util.List;
@@ -54,4 +56,18 @@ public interface SetmealService {
      * @param id
      */
     void startOrStop(Integer status, Long id);
+
+    /**
+     * 条件查询
+     * @param setmeal
+     * @return
+     */
+    List<Setmeal> list(Setmeal setmeal);
+
+    /**
+     * 根据id查询菜品选项
+     * @param id
+     * @return
+     */
+    List<DishItemVO> getDishItemById(Long id);
 }

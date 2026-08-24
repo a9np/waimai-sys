@@ -42,8 +42,16 @@ ex:
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+
+    user-secret-key: user_take_out
+    user-ttl: 7200000
+    #authentication为约定好的名称
+    user-token-name: authentication
   alioss:
     endpoint: ${ex.alioss.endpoint}
     access-key-id: ${ex.alioss.access-key-id}
     access-key-secret: ${ex.alioss.access-key-secret}
     bucket-name: ${ex.alioss.bucket-name}
+  wechat:
+    appid: ${ex.wechat.appid}
+    secret: ${ex.wechat.secret}
